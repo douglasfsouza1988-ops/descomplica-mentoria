@@ -6,6 +6,7 @@ const MENTOR_PW = "descomplica2026";
 const MESES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 const ANO = 2026;
 const CORES = ["#7EC742","#22D3EE","#F97316","#FBBF24","#34D399","#60A5FA","#E879F9","#FB7185","#4ADE80","#A78BFA"];
+const TURMAS = ["Descomplica Turma 1","Descomplica Turma 2","Descomplica Turma 3","Descomplica Turma 4","Descomplica Turma 5"];
 
 const fmt = v => "R$ " + Number(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});
 const fmtK = v => v>=1000 ? `R$ ${(v/1000).toFixed(0)}k` : fmt(v);
@@ -20,34 +21,34 @@ async function save(d) { try { localStorage.setItem("da_v4", JSON.stringify(d));
 
 // ── Fake alunos ────────────────────────────────────────────────────────────
 const FAKE = [
-  {id:1,nome:"Ana Beatriz Costa",area:"Licenciamento Ambiental",senha:"ana123",cor:"#7EC742",
+  {id:1,nome:"Ana Beatriz Costa",area:"Licenciamento Ambiental",senha:"ana123",cor:"#7EC742",turma:"Descomplica Turma 1",
    faturamento:[{mes:"Jan",ano:2026,valor:8500},{mes:"Fev",ano:2026,valor:9200},{mes:"Mar",ano:2026,valor:11000},{mes:"Jan",ano:2025,valor:6000},{mes:"Fev",ano:2025,valor:7200},{mes:"Mar",ano:2025,valor:6800}],
    propostas:[{id:101,cliente:"Construtora Silva",valor:4500,status:"aprovada",data:"2026-03-01"},{id:102,cliente:"Agropecuária Verde",valor:3200,status:"pendente",data:"2026-03-10"},{id:103,cliente:"Rio Claro Ind.",valor:2800,status:"recusada",data:"2026-02-15"}]},
-  {id:2,nome:"Bruno Ferreira",area:"Consultoria EIA/RIMA",senha:"bruno123",cor:"#22D3EE",
+  {id:2,nome:"Bruno Ferreira",area:"Consultoria EIA/RIMA",senha:"bruno123",cor:"#22D3EE",turma:"Descomplica Turma 1",
    faturamento:[{mes:"Jan",ano:2026,valor:12000},{mes:"Fev",ano:2026,valor:13500},{mes:"Mar",ano:2026,valor:15000},{mes:"Jan",ano:2025,valor:9000},{mes:"Fev",ano:2025,valor:10000},{mes:"Mar",ano:2025,valor:11000}],
    propostas:[{id:201,cliente:"Mineradora Alfa",valor:18000,status:"aprovada",data:"2026-02-28"},{id:202,cliente:"PCH Energia",valor:22000,status:"aprovada",data:"2026-03-05"},{id:203,cliente:"Logística MS",valor:8500,status:"pendente",data:"2026-03-11"}]},
-  {id:3,nome:"Camila Oliveira",area:"Gestão de Resíduos",senha:"camila123",cor:"#F97316",
+  {id:3,nome:"Camila Oliveira",area:"Gestão de Resíduos",senha:"camila123",cor:"#F97316",turma:"Descomplica Turma 1",
    faturamento:[{mes:"Jan",ano:2026,valor:5800},{mes:"Fev",ano:2026,valor:6200},{mes:"Mar",ano:2026,valor:7000},{mes:"Jan",ano:2025,valor:4000},{mes:"Fev",ano:2025,valor:4500},{mes:"Mar",ano:2025,valor:5000}],
    propostas:[{id:301,cliente:"Indústria ABC",valor:5000,status:"aprovada",data:"2026-03-02"},{id:302,cliente:"Prefeitura SP",valor:12000,status:"pendente",data:"2026-03-09"}]},
-  {id:4,nome:"Diego Ramos",area:"Perícia Ambiental",senha:"diego123",cor:"#FBBF24",
+  {id:4,nome:"Diego Ramos",area:"Perícia Ambiental",senha:"diego123",cor:"#FBBF24",turma:"Descomplica Turma 2",
    faturamento:[{mes:"Jan",ano:2026,valor:9000},{mes:"Fev",ano:2026,valor:9800},{mes:"Mar",ano:2026,valor:10500},{mes:"Jan",ano:2025,valor:7000},{mes:"Fev",ano:2025,valor:7500},{mes:"Mar",ano:2025,valor:8000}],
    propostas:[{id:401,cliente:"Fazenda Boa Vista",valor:6000,status:"aprovada",data:"2026-03-03"},{id:402,cliente:"Porto Sul",valor:9500,status:"aprovada",data:"2026-02-20"},{id:403,cliente:"Cimento Nacional",valor:4200,status:"pendente",data:"2026-03-12"}]},
-  {id:5,nome:"Eduarda Lima",area:"Educação Ambiental",senha:"edu123",cor:"#34D399",
+  {id:5,nome:"Eduarda Lima",area:"Educação Ambiental",senha:"edu123",cor:"#34D399",turma:"Descomplica Turma 2",
    faturamento:[{mes:"Jan",ano:2026,valor:4200},{mes:"Fev",ano:2026,valor:4800},{mes:"Mar",ano:2026,valor:5500},{mes:"Jan",ano:2025,valor:3000},{mes:"Fev",ano:2025,valor:3200},{mes:"Mar",ano:2025,valor:3800}],
    propostas:[{id:501,cliente:"Escola Estadual",valor:2500,status:"aprovada",data:"2026-03-04"},{id:502,cliente:"ONG Mata Viva",valor:1800,status:"pendente",data:"2026-03-08"},{id:503,cliente:"SESC Regional",valor:3200,status:"recusada",data:"2026-02-25"}]},
-  {id:6,nome:"Felipe Sousa",area:"Monitoramento Hídrico",senha:"felipe123",cor:"#60A5FA",
+  {id:6,nome:"Felipe Sousa",area:"Monitoramento Hídrico",senha:"felipe123",cor:"#60A5FA",turma:"Descomplica Turma 2",
    faturamento:[{mes:"Jan",ano:2026,valor:14000},{mes:"Fev",ano:2026,valor:15500},{mes:"Mar",ano:2026,valor:17000},{mes:"Jan",ano:2025,valor:10000},{mes:"Fev",ano:2025,valor:11500},{mes:"Mar",ano:2025,valor:12000}],
    propostas:[{id:601,cliente:"Sabesp",valor:25000,status:"aprovada",data:"2026-02-26"},{id:602,cliente:"Copasa MG",valor:18000,status:"aprovada",data:"2026-03-01"},{id:603,cliente:"Fazenda Rio Grande",valor:7000,status:"pendente",data:"2026-03-10"}]},
-  {id:7,nome:"Gabriela Mendes",area:"Flora e Fauna",senha:"gabi123",cor:"#E879F9",
+  {id:7,nome:"Gabriela Mendes",area:"Flora e Fauna",senha:"gabi123",cor:"#E879F9",turma:"Descomplica Turma 3",
    faturamento:[{mes:"Jan",ano:2026,valor:7200},{mes:"Fev",ano:2026,valor:7800},{mes:"Mar",ano:2026,valor:8500},{mes:"Jan",ano:2025,valor:5500},{mes:"Fev",ano:2025,valor:6000},{mes:"Mar",ano:2025,valor:6500}],
    propostas:[{id:701,cliente:"ICMBio",valor:11000,status:"aprovada",data:"2026-03-02"},{id:702,cliente:"Reserva Natural SP",valor:8500,status:"pendente",data:"2026-03-07"}]},
-  {id:8,nome:"Henrique Santos",area:"Auditoria ISO 14001",senha:"henrique123",cor:"#FB7185",
+  {id:8,nome:"Henrique Santos",area:"Auditoria ISO 14001",senha:"henrique123",cor:"#FB7185",turma:"Descomplica Turma 3",
    faturamento:[{mes:"Jan",ano:2026,valor:16000},{mes:"Fev",ano:2026,valor:17500},{mes:"Mar",ano:2026,valor:19000},{mes:"Jan",ano:2025,valor:12000},{mes:"Fev",ano:2025,valor:13000},{mes:"Mar",ano:2025,valor:14500}],
    propostas:[{id:801,cliente:"Toyota Brasil",valor:28000,status:"aprovada",data:"2026-02-27"},{id:802,cliente:"Ambev",valor:32000,status:"aprovada",data:"2026-03-04"},{id:803,cliente:"Suzano Papel",valor:15000,status:"pendente",data:"2026-03-09"}]},
-  {id:9,nome:"Isabela Torres",area:"Recuperação de Áreas",senha:"isa123",cor:"#4ADE80",
+  {id:9,nome:"Isabela Torres",area:"Recuperação de Áreas",senha:"isa123",cor:"#4ADE80",turma:"Descomplica Turma 3",
    faturamento:[{mes:"Jan",ano:2026,valor:6500},{mes:"Fev",ano:2026,valor:7200},{mes:"Mar",ano:2026,valor:8000},{mes:"Jan",ano:2025,valor:4800},{mes:"Fev",ano:2025,valor:5200},{mes:"Mar",ano:2025,valor:5800}],
    propostas:[{id:901,cliente:"Mineração BR",valor:9500,status:"aprovada",data:"2026-03-01"},{id:902,cliente:"Rodovias SP",valor:12000,status:"pendente",data:"2026-03-08"},{id:903,cliente:"Hidrelétrica Sul",valor:7800,status:"recusada",data:"2026-02-20"}]},
-  {id:10,nome:"João Pedro Alves",area:"Compliance Ambiental",senha:"joao123",cor:"#A78BFA",
+  {id:10,nome:"João Pedro Alves",area:"Compliance Ambiental",senha:"joao123",cor:"#A78BFA",turma:"Descomplica Turma 1",
    faturamento:[{mes:"Jan",ano:2026,valor:11000},{mes:"Fev",ano:2026,valor:12000},{mes:"Mar",ano:2026,valor:13500},{mes:"Jan",ano:2025,valor:8500},{mes:"Fev",ano:2025,valor:9000},{mes:"Mar",ano:2025,valor:10000}],
    propostas:[{id:1001,cliente:"Braskem",valor:19000,status:"aprovada",data:"2026-02-28"},{id:1002,cliente:"Vale SA",valor:24000,status:"aprovada",data:"2026-03-05"},{id:1003,cliente:"Petrobras",valor:15000,status:"pendente",data:"2026-03-11"}]},
 ];
@@ -194,6 +195,7 @@ function Login({onLogin}) {
   const [pw,setPw]=useState("");
   const [nome,setNome]=useState("");
   const [area,setArea]=useState("");
+  const [turma,setTurma]=useState("");
   const [sp,setSp]=useState("");
   const [ln,setLn]=useState("");
   const [lp,setLp]=useState("");
@@ -204,12 +206,12 @@ function Login({onLogin}) {
   const entrarMentor=()=>{ if(pw===MENTOR_PW) onLogin({role:"mentor"}); else setErr("Senha incorreta."); };
 
   const cadastrar=async()=>{
-    if(!nome.trim()||!area.trim()||!sp.trim()){setErr("Preencha todos os campos.");return;}
+    if(!nome.trim()||!area.trim()||!sp.trim()||!turma){setErr("Preencha todos os campos.");return;}
     setBusy(true);
     const d=(await load())||defaultData();
     if(d.mentorados.find(m=>m.nome.toLowerCase()===nome.trim().toLowerCase())){setErr("Nome já cadastrado.");setBusy(false);return;}
     const cor=CORES[d.mentorados.length%CORES.length];
-    d.mentorados.push({id:Date.now(),nome:nome.trim(),area:area.trim(),senha:sp,cor,faturamento:[],propostas:[]});
+    d.mentorados.push({id:Date.now(),nome:nome.trim(),area:area.trim(),turma,senha:sp,cor,faturamento:[],propostas:[]});
     await save(d); onLogin({role:"aluno",id:d.mentorados.at(-1).id}); setBusy(false);
   };
 
@@ -262,6 +264,10 @@ function Login({onLogin}) {
             <h3 style={{fontWeight:800,color:"#E5E7EB",marginBottom:18}}>Criar Conta</h3>
             <input className="inp" placeholder="Nome completo" value={nome} onChange={e=>{clr();setNome(e.target.value);}}/>
             <input className="inp" placeholder="Área de atuação" value={area} onChange={e=>{clr();setArea(e.target.value);}}/>
+            <select className="sel" value={turma} onChange={e=>{clr();setTurma(e.target.value);}} style={{marginBottom:12}}>
+              <option value="">Selecione sua turma…</option>
+              {TURMAS.map(t=><option key={t} value={t}>{t}</option>)}
+            </select>
             <input className="inp" type="password" placeholder="Crie uma senha" value={sp} onChange={e=>{clr();setSp(e.target.value);}}/>
             {err&&<p style={{color:"#FB7185",fontSize:12,marginBottom:10,textAlign:"center"}}>{err}</p>}
             <button className="btn-primary" onClick={cadastrar} disabled={busy} style={{opacity:busy?.7:1}}>{busy?"Criando...":"Criar Conta"}</button>
@@ -278,30 +284,162 @@ function Login({onLogin}) {
 }
 
 // ── Turma ─────────────────────────────────────────────────────────────────────
+function computeRanking(mentorados, mode, mes, ano, turma) {
+  let list = turma ? mentorados.filter(m=>m.turma===turma) : [...mentorados];
+  if(mode==="fat-ano") {
+    return list.map(m=>({...m,score:m.faturamento.filter(f=>(f.ano||ANO)===ano).reduce((a,b)=>a+b.valor,0),label:"fat"})).sort((a,b)=>b.score-a.score);
+  }
+  if(mode==="fat-mes") {
+    return list.map(m=>({...m,score:m.faturamento.find(f=>f.mes===mes&&(f.ano||ANO)===ano)?.valor||0,label:"fat"})).sort((a,b)=>b.score-a.score);
+  }
+  if(mode==="fat-turma") {
+    return list.map(m=>({...m,score:m.faturamento.filter(f=>(f.ano||ANO)===ano).reduce((a,b)=>a+b.valor,0),label:"fat"})).sort((a,b)=>b.score-a.score);
+  }
+  if(mode==="prop-total") {
+    return list.map(m=>({...m,score:m.propostas.length,label:"prop"})).sort((a,b)=>b.score-a.score);
+  }
+  if(mode==="prop-aprov") {
+    return list.map(m=>({...m,score:m.propostas.filter(p=>p.status==="aprovada").length,label:"prop"})).sort((a,b)=>b.score-a.score);
+  }
+  return list;
+}
+
+function RankingCard({m, pos, rank, mode}) {
+  const medals=["🥇","🥈","🥉"];
+  const isFat = mode!=="prop-total"&&mode!=="prop-aprov";
+  return (
+    <div style={{display:"flex",alignItems:"center",gap:12,background:"#111827",border:`1px solid ${pos<=3?"#7EC74230":"#1F2937"}`,borderRadius:14,padding:"12px 16px",animation:`fadeUp .3s ease ${pos*.03}s both`}}>
+      <div style={{width:28,textAlign:"center",fontSize:pos<=3?20:13,fontWeight:700,color:pos<=3?"inherit":"#4B5563",flexShrink:0}}>
+        {pos<=3?medals[pos-1]:pos+"°"}
+      </div>
+      <Avatar nome={m.nome} cor={m.cor} size={38} idx={m.id}/>
+      <div style={{flex:1,minWidth:0}}>
+        <div style={{fontWeight:700,color:"#E5E7EB",fontSize:13,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{m.nome}</div>
+        <div style={{fontSize:10,color:"#4B5563",marginTop:1}}>{m.turma||m.area}</div>
+      </div>
+      {/* Proposal badges always visible */}
+      <div style={{display:"flex",gap:6,flexShrink:0}}>
+        <div style={{background:"#161B2E",borderRadius:7,padding:"4px 8px",textAlign:"center"}}>
+          <div style={{fontSize:12,fontWeight:800,color:"#60A5FA",fontFamily:"DM Mono,monospace"}}>{m.propostas.length}</div>
+          <div style={{fontSize:8,color:"#374151"}}>📋</div>
+        </div>
+        <div style={{background:"#052E16",borderRadius:7,padding:"4px 8px",textAlign:"center"}}>
+          <div style={{fontSize:12,fontWeight:800,color:"#7EC742",fontFamily:"DM Mono,monospace"}}>{m.propostas.filter(p=>p.status==="aprovada").length}</div>
+          <div style={{fontSize:8,color:"#374151"}}>✅</div>
+        </div>
+      </div>
+      <div style={{flexShrink:0,textAlign:"right"}}>
+        <div style={{fontSize:14,fontWeight:800,color:pos===1?"#FBBF24":m.cor,fontFamily:"DM Mono,monospace"}}>
+          {isFat?fmtK(m.score):m.score}
+        </div>
+        <div style={{fontSize:9,color:"#374151"}}>{isFat?"fat.":"propostas"}</div>
+      </div>
+    </div>
+  );
+}
+
 function Turma({data,ano,setAno,uid}) {
+  const [mode,setMode]=useState("fat-ano");
+  const [mes,setMes]=useState(MESES[new Date().getMonth()]||"Mar");
+  const [turmaFil,setTurmaFil]=useState("");
+
   const anos=[...new Set(data.mentorados.flatMap(m=>m.faturamento.map(f=>f.ano||ANO)))].sort();
-  const rank=[...data.mentorados].map(m=>({...m,tf:m.faturamento.filter(f=>(f.ano||ANO)===ano).reduce((a,b)=>a+b.valor,0)})).sort((a,b)=>b.tf-a.tf);
-  const maxTf=rank[0]?.tf||1;
-  const total=rank.reduce((a,b)=>a+b.tf,0);
-  const barData=rank.slice(0,8).map(m=>({name:m.nome.split(" ")[0],val:m.tf,fill:m.cor}));
-  const lineData=MESES.map(mes=>{
-    const o={mes};
-    data.mentorados.slice(0,5).forEach(m=>{o[m.nome.split(" ")[0]]=m.faturamento.find(f=>f.mes===mes&&(f.ano||ANO)===ano)?.valor||0;});
+  const rank=computeRanking(data.mentorados,mode,mes,ano,turmaFil);
+
+  // For bar chart — always use fat-ano for chart
+  const barData=computeRanking(data.mentorados,"fat-ano",mes,ano,turmaFil).slice(0,8).map(m=>({name:m.nome.split(" ")[0],val:m.score,fill:m.cor}));
+  const total=computeRanking(data.mentorados,"fat-ano",mes,ano,turmaFil).reduce((a,b)=>a+b.score,0);
+  const lineData=MESES.map(m=>{
+    const o={mes:m};
+    data.mentorados.slice(0,5).forEach(mu=>{o[mu.nome.split(" ")[0]]=mu.faturamento.find(f=>f.mes===m&&(f.ano||ANO)===ano)?.valor||0;});
     return o;
   }).filter(o=>Object.values(o).some((v,i)=>i>0&&v>0));
 
+  const modeButtons=[
+    {id:"fat-ano",label:"💰 Ano"},
+    {id:"fat-mes",label:"📅 Mês"},
+    {id:"fat-turma",label:"🎓 Turma"},
+    {id:"prop-total",label:"📋 Propostas"},
+    {id:"prop-aprov",label:"✅ Aprovadas"},
+  ];
+
+  // Turma summary cards (for fat-turma mode with no filter)
+  const turmasSummary = TURMAS.map(t=>{
+    const members=data.mentorados.filter(m=>m.turma===t);
+    if(!members.length) return null;
+    const fat=members.reduce((a,m)=>a+m.faturamento.filter(f=>(f.ano||ANO)===ano).reduce((s,f)=>s+f.valor,0),0);
+    const props=members.reduce((a,m)=>a+m.propostas.length,0);
+    const aprov=members.reduce((a,m)=>a+m.propostas.filter(p=>p.status==="aprovada").length,0);
+    return {t,members:members.length,fat,props,aprov};
+  }).filter(Boolean);
+
   return (
     <div style={{animation:"fadeIn .3s ease"}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
         <h2 style={{fontSize:24,fontWeight:800,color:"#E5E7EB"}}>🏆 Ranking da Turma</h2>
         <select className="sel" value={ano} onChange={e=>setAno(Number(e.target.value))} style={{width:"auto",marginBottom:0,padding:"8px 14px"}}>
           {(anos.length?anos:[ANO]).map(a=><option key={a} value={a}>{a}</option>)}
         </select>
       </div>
 
-      {/* Pódio */}
-      {rank.length>=3 && (
-        <div style={{display:"flex",justifyContent:"center",alignItems:"flex-end",gap:14,marginBottom:28}}>
+      {/* Mode buttons */}
+      <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14}}>
+        {modeButtons.map(b=>(
+          <button key={b.id} onClick={()=>setMode(b.id)}
+            style={{background:mode===b.id?"#7EC742":"#111827",color:mode===b.id?"#050D06":"#9CA3AF",border:`1px solid ${mode===b.id?"#7EC742":"#1F2937"}`,borderRadius:10,padding:"7px 14px",fontSize:12,fontWeight:600,cursor:"pointer",transition:"all .2s"}}>
+            {b.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Sub-filters */}
+      <div style={{display:"flex",gap:10,marginBottom:20,flexWrap:"wrap"}}>
+        {mode==="fat-mes" && (
+          <select className="sel" value={mes} onChange={e=>setMes(e.target.value)} style={{width:"auto",marginBottom:0,padding:"7px 12px",fontSize:12}}>
+            {MESES.map(m=><option key={m} value={m}>{m}</option>)}
+          </select>
+        )}
+        {(mode==="fat-turma"||mode==="prop-total"||mode==="prop-aprov") && (
+          <select className="sel" value={turmaFil} onChange={e=>setTurmaFil(e.target.value)} style={{width:"auto",marginBottom:0,padding:"7px 12px",fontSize:12}}>
+            <option value="">Todas as turmas</option>
+            {TURMAS.map(t=><option key={t} value={t}>{t}</option>)}
+          </select>
+        )}
+      </div>
+
+      {/* Turma summary cards when mode=fat-turma and no filter */}
+      {mode==="fat-turma" && !turmaFil && (
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:12,marginBottom:22}}>
+          {turmasSummary.map((ts,i)=>(
+            <div key={ts.t} onClick={()=>setTurmaFil(ts.t)} style={{background:"#111827",border:"1px solid #1F2937",borderRadius:14,padding:"14px 16px",cursor:"pointer",transition:"border-color .2s",animation:`fadeUp .3s ease ${i*.05}s both`}}
+              onMouseOver={e=>e.currentTarget.style.borderColor="#7EC74240"} onMouseOut={e=>e.currentTarget.style.borderColor="#1F2937"}>
+              <div style={{fontWeight:700,color:"#E5E7EB",fontSize:13,marginBottom:8}}>{ts.t}</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+                <div style={{background:"#0A1628",borderRadius:8,padding:"6px 8px"}}>
+                  <div style={{fontSize:14,fontWeight:800,color:"#7EC742",fontFamily:"DM Mono,monospace"}}>{fmtK(ts.fat)}</div>
+                  <div style={{fontSize:9,color:"#374151"}}>faturamento</div>
+                </div>
+                <div style={{background:"#0A1628",borderRadius:8,padding:"6px 8px"}}>
+                  <div style={{fontSize:14,fontWeight:800,color:"#60A5FA",fontFamily:"DM Mono,monospace"}}>{ts.members}</div>
+                  <div style={{fontSize:9,color:"#374151"}}>alunos</div>
+                </div>
+                <div style={{background:"#0A1628",borderRadius:8,padding:"6px 8px"}}>
+                  <div style={{fontSize:14,fontWeight:800,color:"#A78BFA",fontFamily:"DM Mono,monospace"}}>{ts.props}</div>
+                  <div style={{fontSize:9,color:"#374151"}}>propostas</div>
+                </div>
+                <div style={{background:"#052E16",borderRadius:8,padding:"6px 8px"}}>
+                  <div style={{fontSize:14,fontWeight:800,color:"#7EC742",fontFamily:"DM Mono,monospace"}}>{ts.aprov}</div>
+                  <div style={{fontSize:9,color:"#374151"}}>aprovadas</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Pódio — only for fat modes */}
+      {(mode==="fat-ano"||mode==="fat-mes"||(mode==="fat-turma"&&turmaFil)) && rank.length>=3 && (
+        <div style={{display:"flex",justifyContent:"center",alignItems:"flex-end",gap:14,marginBottom:24}}>
           {[rank[1],rank[0],rank[2]].map((m,i)=>{
             const pos=[2,1,3][i]; const h=[82,115,66][i]; const md=["🥈","🥇","🥉"][i];
             return (
@@ -310,13 +448,19 @@ function Turma({data,ano,setAno,uid}) {
                 <Avatar nome={m.nome} cor={m.cor} size={44} idx={m.id} style={{boxShadow:pos===1?`0 0 20px ${m.cor}60`:"none"}}/>
                 <span style={{fontSize:11,color:"#9CA3AF",maxWidth:70,textAlign:"center",lineHeight:1.3,fontWeight:500}}>{m.nome.split(" ")[0]}</span>
                 <div style={{width:76,background:"#111827",border:`1px solid ${m.cor}35`,borderRadius:"10px 10px 0 0",height:h,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:pos===1?`0 -6px 24px ${m.cor}25`:"none"}}>
-                  <span style={{fontSize:10,color:m.cor,fontFamily:"DM Mono,monospace",fontWeight:600,textAlign:"center",padding:"0 4px"}}>{fmtK(m.tf)}</span>
+                  <span style={{fontSize:10,color:m.cor,fontFamily:"DM Mono,monospace",fontWeight:600,textAlign:"center",padding:"0 4px"}}>{fmtK(m.score)}</span>
                 </div>
               </div>
             );
           })}
         </div>
       )}
+
+      {/* Ranking list */}
+      <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:22}}>
+        {rank.map((m,i)=><RankingCard key={m.id} m={m} pos={i+1} rank={rank} mode={mode}/>)}
+        {rank.length===0 && <div style={{textAlign:"center",color:"#374151",padding:"30px 0"}}>Nenhum dado para esta seleção</div>}
+      </div>
 
       {/* Bar chart */}
       <div style={{background:"#111827",border:"1px solid #1F2937",borderRadius:18,padding:22,marginBottom:18}}>
@@ -566,6 +710,7 @@ function Mentor({onLogout}) {
   const totalG=data.mentorados.reduce((a,m)=>a+m.faturamento.filter(f=>(f.ano||ANO)===ano).reduce((s,f)=>s+f.valor,0),0);
   const totalP=data.mentorados.reduce((a,m)=>a+m.propostas.filter(p=>p.status==="aprovada").reduce((s,p)=>s+p.valor,0),0);
   const pend=data.mentorados.reduce((a,m)=>a+m.propostas.filter(p=>p.status==="pendente").length,0);
+  const totalProps=data.mentorados.reduce((a,m)=>a+m.propostas.length,0);
 
   return (
     <div style={{minHeight:"100vh",background:"#080f06"}}>
@@ -589,7 +734,7 @@ function Mentor({onLogout}) {
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,marginBottom:24}}>
             <StatCard icon="💰" label={`Faturamento ${ano}`} value={totalG} color="#7EC742" isNum delay={0}/>
             <StatCard icon="✅" label="Propostas aprovadas" value={totalP} color="#22D3EE" isNum delay={.08}/>
-            <StatCard icon="⏳" label="Pendentes / Alunos" value={`${pend} / ${data.mentorados.length}`} color="#FBBF24" delay={.16}/>
+            <StatCard icon="📋" label={`Total propostas / Pendentes`} value={`${totalProps} / ${pend}`} color="#FBBF24" delay={.16}/>
           </div>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(258px,1fr))",gap:16}}>
@@ -654,7 +799,7 @@ function Mentor({onLogout}) {
                   <Avatar nome={m.nome} cor={m.cor} size={40} idx={m.id%5}/>
                   <div>
                     <div style={{fontWeight:700,color:"#E5E7EB",fontSize:14}}>{m.nome}</div>
-                    <div style={{fontSize:11,color:"#6B7280",marginTop:2}}>{m.area} · {m.faturamento.length} registros · {m.propostas.length} propostas</div>
+                    <div style={{fontSize:11,color:"#6B7280",marginTop:2}}>{m.area} · {m.turma||"—"} · {m.faturamento.length} registros · {m.propostas.length} propostas</div>
                   </div>
                 </div>
                 <div style={{display:"flex",gap:8}}>
@@ -679,6 +824,7 @@ function Mentor({onLogout}) {
                 <div style={{flex:1}}>
                   <div style={{fontSize:22,fontWeight:800,color:"#E5E7EB"}}>{m.nome}</div>
                   <div style={{fontSize:13,color:"#6B7280",marginTop:2}}>{m.area}</div>
+                  {m.turma && <div style={{fontSize:11,color:"#7EC742",marginTop:4,background:"#052E16",display:"inline-block",borderRadius:6,padding:"2px 8px",fontWeight:600}}>🎓 {m.turma}</div>}
                 </div>
                 <select className="sel" value={ano} onChange={e=>setAno(Number(e.target.value))} style={{width:"auto",marginBottom:0,padding:"8px 14px"}}>
                   {[2024,2025,2026,2027].map(a=><option key={a} value={a}>{a}</option>)}
