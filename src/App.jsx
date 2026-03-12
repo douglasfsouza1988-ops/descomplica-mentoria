@@ -6,7 +6,7 @@ const MENTOR_PW = "descomplica2026";
 const MESES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 const ANO = 2026;
 const CORES = ["#7EC742","#22D3EE","#F97316","#FBBF24","#34D399","#60A5FA","#E879F9","#FB7185","#4ADE80","#A78BFA"];
-const TURMAS = ["Descomplica Turma 1","Descomplica Turma 2","Descomplica Turma 3","Descomplica Turma 4","Descomplica Turma 5"];
+const TURMAS = Array.from({length:40},(_,i)=>`Descomplica Turma ${i+1}`);
 
 const fmt = v => "R$ " + Number(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});
 const fmtK = v => v>=1000 ? `R$ ${(v/1000).toFixed(0)}k` : fmt(v);
