@@ -12,12 +12,37 @@ const fmt = v => "R$ " + Number(v||0).toLocaleString("pt-BR",{minimumFractionDig
 const fmtK = v => v>=1000 ? `R$ ${(v/1000).toFixed(0)}k` : fmt(v);
 const ini = n => n.trim().split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
 
-// ── Storage ────────────────────────────────────────────────────────────────
+// ── Firebase ────────────────────────────────────────────────────────────────
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDSfynx-BFcrHoMpWEZjIWGB7s-ImzGtK4",
+  authDomain: "descomplica-mentoria.firebaseapp.com",
+  projectId: "descomplica-mentoria",
+  storageBucket: "descomplica-mentoria.firebasestorage.app",
+  messagingSenderId: "553029124549",
+  appId: "1:553029124549:web:36db646cff3be80ca94bac"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+const DATA_DOC = doc(db, "app", "data");
+
 async function load() {
-  try { const v = localStorage.getItem("da_v4"); return v ? JSON.parse(v) : null; }
-  catch { return null; }
+  try {
+    const snap = await getDoc(DATA_DOC);
+    if (snap.exists()) return snap.data().payload;
+    return null;
+  } catch { return null; }
 }
-async function save(d) { try { localStorage.setItem("da_v4", JSON.stringify(d)); } catch {} }
+async function save(d) {
+  try { await setDoc(DATA_DOC, { payload: d }); } catch {}
+}
+function subscribe(cb) {
+  return onSnapshot(DATA_DOC, snap => {
+    if (snap.exists()) cb(snap.data().payload);
+  });
+}
 
 // ── Fake alunos ────────────────────────────────────────────────────────────
 const FAKE = [
@@ -509,7 +534,7 @@ function Turma({data,ano,setAno,uid}) {
 }
 
 // ── Aluno ─────────────────────────────────────────────────────────────────────
-function Aluno({user,onLogout}) {
+function Aluno({user,onLogout,subscribe}) {
   const [data,setData]=useState(null);
   const [tab,setTab]=useState("painel");
   const [mFat,setMFat]=useState(false);
@@ -518,8 +543,11 @@ function Aluno({user,onLogout}) {
   const [pForm,setPForm]=useState({cliente:"",valor:"",status:"pendente",data:new Date().toISOString().split("T")[0]});
   const [saving,setSaving]=useState(false);
   const [ano,setAno]=useState(ANO);
-  const reload=useCallback(async()=>{const d=(await load())||defaultData();setData(d);},[]);
-  useEffect(()=>{reload();const t=setInterval(reload,8000);return()=>clearInterval(t);},[reload]);
+  useEffect(()=>{
+    load().then(d=>{if(d)setData(d);else{const dd=defaultData();save(dd);setData(dd);}});
+    const unsub=subscribe(d=>setData(d));
+    return()=>unsub();
+  },[]);
 
   const eu=data?.mentorados.find(m=>m.id===user.id);
 
@@ -690,13 +718,16 @@ function Aluno({user,onLogout}) {
 }
 
 // ── Mentor ────────────────────────────────────────────────────────────────────
-function Mentor({onLogout}) {
+function Mentor({onLogout,subscribe}) {
   const [data,setData]=useState(null);
   const [tab,setTab]=useState("painel");
   const [sel,setSel]=useState(null);
   const [ano,setAno]=useState(ANO);
-  const reload=useCallback(async()=>{const d=(await load())||defaultData();setData(d);},[]);
-  useEffect(()=>{reload();const t=setInterval(reload,6000);return()=>clearInterval(t);},[reload]);
+  useEffect(()=>{
+    load().then(d=>{if(d)setData(d);else{const dd=defaultData();save(dd);setData(dd);}});
+    const unsub=subscribe(d=>setData(d));
+    return()=>unsub();
+  },[]);
 
   const remover=async(id)=>{
     if(!window.confirm("Remover este mentorado?"))return;
@@ -880,9 +911,15 @@ function Mentor({onLogout}) {
 export default function App() {
   const [user,setUser]=useState(null);
   const [ready,setReady]=useState(false);
-  useEffect(()=>{(async()=>{const e=await load();if(!e)await save(defaultData());setReady(true);})();},[]);
+  useEffect(()=>{
+    (async()=>{
+      const e=await load();
+      if(!e) await save(defaultData());
+      setReady(true);
+    })();
+  },[]);
   if(!ready) return <div style={{minHeight:"100vh",background:"#080f06",display:"flex",alignItems:"center",justifyContent:"center",color:"#7EC742",fontFamily:"DM Sans,sans-serif",fontSize:15}}>🌿 Carregando...</div>;
   if(!user) return <Login onLogin={setUser}/>;
-  if(user.role==="mentor") return <Mentor onLogout={()=>setUser(null)}/>;
-  return <Aluno user={user} onLogout={()=>setUser(null)}/>;
+  if(user.role==="mentor") return <Mentor onLogout={()=>setUser(null)} subscribe={subscribe}/>;
+  return <Aluno user={user} onLogout={()=>setUser(null)} subscribe={subscribe}/>;
 }
