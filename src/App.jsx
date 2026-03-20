@@ -78,22 +78,22 @@ async function migrateIfNeeded() {
     const payload = oldDoc.data().payload;
     if (!payload?.mentorados?.length) return;
 
-    // Check if already migrated
+    // Migrate each student — skip if already exists (by id)
     const existing = await getDocs(alunosCol);
-    if (existing.size > 0) {
-      // Already have new format — just delete old doc
-      await deleteDoc(doc(db, "app", "data"));
-      return;
-    }
+    const existingIds = new Set(existing.docs.map(d => d.id));
 
-    // Migrate each student
     const batch = writeBatch(db);
+    let count = 0;
     for (const aluno of payload.mentorados) {
-      batch.set(doc(db, "alunos", String(aluno.id)), aluno);
+      const id = String(aluno.id);
+      if (!existingIds.has(id)) {
+        batch.set(doc(db, "alunos", id), aluno);
+        count++;
+      }
     }
-    await batch.commit();
+    if (count > 0) await batch.commit();
     await deleteDoc(doc(db, "app", "data"));
-    console.log("Migration complete:", payload.mentorados.length, "students migrated");
+    console.log("Migration complete:", count, "new students migrated");
   } catch(e) {
     console.error("Migration error:", e);
   }
