@@ -599,8 +599,17 @@ function Aluno({userId, onLogout}) {
                 <div style={{fontSize:10,color:"#6B7280",textTransform:"uppercase",letterSpacing:2,fontWeight:600}}>Faturamento mensal</div>
                 <div style={{fontSize:22,fontWeight:800,color:aluno.cor,fontFamily:"DM Mono,monospace",marginTop:3}}>{fmt(totalFat)}</div>
               </div>
-              <button onClick={()=>setMFat(true)} style={{background:"#7EC742",border:"none",borderRadius:10,padding:"8px 16px",color:"#080f06",fontWeight:700,fontSize:13,cursor:"pointer"}}>+ Registrar</button>
+              <button onClick={()=>{setFForm({mes:"",ano:ANO,valor:""});setMFat(true);}} style={{background:"#7EC742",border:"none",borderRadius:10,padding:"8px 16px",color:"#080f06",fontWeight:700,fontSize:13,cursor:"pointer"}}>+ Registrar</button>
             </div>
+
+            {/* Orientação sobre lançamento */}
+            <div style={{background:"#0A1628",border:"1px solid #1F2937",borderRadius:10,padding:"10px 14px",marginBottom:16,display:"flex",gap:8,alignItems:"flex-start"}}>
+              <span style={{fontSize:14,flexShrink:0}}>💡</span>
+              <div style={{fontSize:11,color:"#6B7280",lineHeight:1.6}}>
+                <span style={{color:"#9CA3AF",fontWeight:600}}>Como lançar:</span> Registre o <strong style={{color:"#E5E7EB"}}>valor total do contrato</strong> no mês em que foi fechado. Ex: contrato de R$ 6.000 em 3x → lance <strong style={{color:"#7EC742"}}>R$ 6.000</strong> no mês do fechamento. Errou o valor? Clique em ✏️ para corrigir.
+              </div>
+            </div>
+
             {areaData.length>0 ? (
               <ResponsiveContainer width="100%" height={180}>
                 <AreaChart data={areaData} margin={{top:4,right:4,bottom:4,left:4}}>
@@ -613,6 +622,24 @@ function Aluno({userId, onLogout}) {
                 </AreaChart>
               </ResponsiveContainer>
             ) : <div style={{height:80,display:"flex",alignItems:"center",justifyContent:"center",color:"#374151",fontSize:13}}>Nenhum dado para {ano}</div>}
+
+            {/* Lista de lançamentos com botão editar */}
+            {fatAno.length>0 && (
+              <div style={{marginTop:16,display:"flex",flexDirection:"column",gap:6}}>
+                {[...fatAno].reverse().map(f=>(
+                  <div key={`${f.mes}-${f.ano}`} style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"#0A0F0A",borderRadius:10,padding:"10px 14px",border:"1px solid #1F2937"}}>
+                    <div style={{fontSize:13,color:"#9CA3AF",fontWeight:600}}>{f.mes} {f.ano!==ANO?f.ano:""}</div>
+                    <div style={{display:"flex",alignItems:"center",gap:10}}>
+                      <span style={{fontSize:14,fontWeight:800,color:aluno.cor,fontFamily:"DM Mono,monospace"}}>{fmt(f.valor)}</span>
+                      <button onClick={()=>{setFForm({mes:f.mes,ano:f.ano||ANO,valor:String(f.valor)});setMFat(true);}}
+                        style={{background:"#1F2937",border:"none",color:"#9CA3AF",borderRadius:7,padding:"4px 10px",fontSize:11,cursor:"pointer",fontWeight:600}}>
+                        ✏️ Editar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div style={{background:"#111827",border:"1px solid #1F2937",borderRadius:18,padding:22,animation:"fadeUp .5s ease .2s both"}}>
@@ -649,7 +676,9 @@ function Aluno({userId, onLogout}) {
       </div>
 
       {mFat && <Modal onClose={()=>setMFat(false)} w={370}>
-        <h3 style={{fontWeight:800,color:"#E5E7EB",marginBottom:20,fontSize:18}}>Registrar Faturamento</h3>
+        <h3 style={{fontWeight:800,color:"#E5E7EB",marginBottom:4,fontSize:18}}>{fForm.valor?"✏️ Editar Faturamento":"Registrar Faturamento"}</h3>
+        {fForm.valor && <p style={{fontSize:12,color:"#6B7280",marginBottom:16}}>O valor anterior será substituído.</p>}
+        {!fForm.valor && <p style={{fontSize:12,color:"#6B7280",marginBottom:16}}>Lance o valor <strong style={{color:"#E5E7EB"}}>total do contrato</strong> no mês do fechamento.</p>}
         <label style={{fontSize:10,color:"#6B7280",textTransform:"uppercase",letterSpacing:2,fontWeight:600,display:"block",marginBottom:6}}>Mês</label>
         <select className="sel" value={fForm.mes} onChange={e=>setFForm({...fForm,mes:e.target.value})}>
           <option value="">Selecione</option>{MESES.map(m=><option key={m} value={m}>{m}</option>)}
