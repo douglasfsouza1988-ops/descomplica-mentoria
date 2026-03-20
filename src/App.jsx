@@ -76,7 +76,8 @@ const FAKE = [
    faturamento:[{mes:"Jan",ano:2026,valor:11000},{mes:"Fev",ano:2026,valor:12000},{mes:"Mar",ano:2026,valor:13500},{mes:"Jan",ano:2025,valor:8500},{mes:"Fev",ano:2025,valor:9000},{mes:"Mar",ano:2025,valor:10000}],
    propostas:[{id:1001,cliente:"Braskem",valor:19000,status:"aprovada",data:"2026-02-28"},{id:1002,cliente:"Vale SA",valor:24000,status:"aprovada",data:"2026-03-05"},{id:1003,cliente:"Petrobras",valor:15000,status:"pendente",data:"2026-03-11"}]},
 ];
-const defaultData = () => ({mentorados:FAKE,updatedAt:Date.now()});
+const defaultData = () => ({mentorados:[],updatedAt:Date.now()});
+const FAKE_IDS = [1,2,3,4,5,6,7,8,9,10]; // IDs dos alunos demo
 
 const ST = {
   aprovada:{bg:"#052E16",color:"#7EC742"},
@@ -232,11 +233,21 @@ function Login({onLogin}) {
   const cadastrar=async()=>{
     if(!nome.trim()||!area.trim()||!sp.trim()||!turma){setErr("Preencha todos os campos.");return;}
     setBusy(true);
-    const d=(await load())||defaultData();
-    if(d.mentorados.find(m=>m.nome.toLowerCase()===nome.trim().toLowerCase())){setErr("Nome já cadastrado.");setBusy(false);return;}
-    const cor=CORES[d.mentorados.length%CORES.length];
-    d.mentorados.push({id:Date.now(),nome:nome.trim(),area:area.trim(),turma,senha:sp,cor,faturamento:[],propostas:[]});
-    await save(d); onLogin({role:"aluno",id:d.mentorados.at(-1).id}); setBusy(false);
+    try {
+      const d=(await load())||defaultData();
+      if(d.mentorados.find(m=>m.nome.toLowerCase()===nome.trim().toLowerCase())){setErr("Nome já cadastrado.");setBusy(false);return;}
+      const cor=CORES[d.mentorados.length%CORES.length];
+      const novoAluno={id:Date.now(),nome:nome.trim(),area:area.trim(),turma,senha:sp,cor,faturamento:[],propostas:[]};
+      // Recarrega do banco antes de salvar para evitar sobrescrita simultânea
+      const dFresh=(await load())||defaultData();
+      if(dFresh.mentorados.find(m=>m.nome.toLowerCase()===nome.trim().toLowerCase())){setErr("Nome já cadastrado.");setBusy(false);return;}
+      dFresh.mentorados.push(novoAluno);
+      await save(dFresh);
+      onLogin({role:"aluno",id:novoAluno.id});
+    } catch(e) {
+      setErr("Erro ao cadastrar. Tente novamente.");
+    }
+    setBusy(false);
   };
 
   const entrarAluno=async()=>{
@@ -552,26 +563,41 @@ function Aluno({user,onLogout,subscribe}) {
 
   const addFat=async()=>{
     if(!fForm.mes||!fForm.valor)return; setSaving(true);
-    const d=(await load())||defaultData(); const idx=d.mentorados.findIndex(m=>m.id===user.id);
-    if(idx>=0){
-      d.mentorados[idx].faturamento=d.mentorados[idx].faturamento.filter(f=>!(f.mes===fForm.mes&&f.ano===Number(fForm.ano)));
-      d.mentorados[idx].faturamento.push({mes:fForm.mes,ano:Number(fForm.ano),valor:parseFloat(fForm.valor)});
-      d.mentorados[idx].faturamento.sort((a,b)=>a.ano!==b.ano?a.ano-b.ano:MESES.indexOf(a.mes)-MESES.indexOf(b.mes));
-    }
-    await save(d);setData(d);setMFat(false);setFForm({mes:"",ano:ANO,valor:""});setSaving(false);
+    try {
+      const d=(await load())||defaultData();
+      const idx=d.mentorados.findIndex(m=>m.id===user.id);
+      if(idx>=0){
+        d.mentorados[idx].faturamento=d.mentorados[idx].faturamento.filter(f=>!(f.mes===fForm.mes&&f.ano===Number(fForm.ano)));
+        d.mentorados[idx].faturamento.push({mes:fForm.mes,ano:Number(fForm.ano),valor:parseFloat(fForm.valor)});
+        d.mentorados[idx].faturamento.sort((a,b)=>a.ano!==b.ano?a.ano-b.ano:MESES.indexOf(a.mes)-MESES.indexOf(b.mes));
+        await save(d);
+      }
+    } catch(e){}
+    setMFat(false);setFForm({mes:"",ano:ANO,valor:""});setSaving(false);
   };
 
   const addProp=async()=>{
     if(!pForm.cliente||!pForm.valor)return; setSaving(true);
-    const d=(await load())||defaultData(); const idx=d.mentorados.findIndex(m=>m.id===user.id);
-    if(idx>=0)d.mentorados[idx].propostas.push({id:Date.now(),...pForm,valor:parseFloat(pForm.valor)});
-    await save(d);setData(d);setMProp(false);setPForm({cliente:"",valor:"",status:"pendente",data:new Date().toISOString().split("T")[0]});setSaving(false);
+    try {
+      const d=(await load())||defaultData();
+      const idx=d.mentorados.findIndex(m=>m.id===user.id);
+      if(idx>=0){
+        d.mentorados[idx].propostas.push({id:Date.now(),...pForm,valor:parseFloat(pForm.valor)});
+        await save(d);
+      }
+    } catch(e){}
+    setMProp(false);setPForm({cliente:"",valor:"",status:"pendente",data:new Date().toISOString().split("T")[0]});setSaving(false);
   };
 
   const updStatus=async(pid,s)=>{
-    const d=(await load())||defaultData(); const idx=d.mentorados.findIndex(m=>m.id===user.id);
-    if(idx>=0)d.mentorados[idx].propostas=d.mentorados[idx].propostas.map(p=>p.id===pid?{...p,status:s}:p);
-    await save(d);setData(d);
+    try {
+      const d=(await load())||defaultData();
+      const idx=d.mentorados.findIndex(m=>m.id===user.id);
+      if(idx>=0){
+        d.mentorados[idx].propostas=d.mentorados[idx].propostas.map(p=>p.id===pid?{...p,status:s}:p);
+        await save(d);
+      }
+    } catch(e){}
   };
 
   if(!data||!eu) return <div style={{minHeight:"100vh",background:"#080f06",display:"flex",alignItems:"center",justifyContent:"center",color:"#6B7280"}}>Carregando...</div>;
@@ -735,6 +761,13 @@ function Mentor({onLogout,subscribe}) {
     await save(d);setData(d);setSel(null);setTab("painel");
   };
 
+  const removerDemos=async()=>{
+    if(!window.confirm("Remover os 10 alunos de demonstração? Os alunos reais serão mantidos."))return;
+    const d=(await load())||defaultData();
+    d.mentorados=d.mentorados.filter(m=>!FAKE_IDS.includes(m.id));
+    await save(d);setData(d);
+  };
+
   if(!data) return <div style={{minHeight:"100vh",background:"#080f06",display:"flex",alignItems:"center",justifyContent:"center",color:"#6B7280"}}>Carregando...</div>;
 
   const totalG=data.mentorados.reduce((a,m)=>a+m.faturamento.filter(f=>(f.ano||ANO)===ano).reduce((s,f)=>s+f.valor,0),0);
@@ -757,9 +790,16 @@ function Mentor({onLogout,subscribe}) {
         {tab==="painel" && <div style={{animation:"fadeIn .3s ease"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:22}}>
             <h2 style={{fontSize:24,fontWeight:800,color:"#E5E7EB"}}>Visão Geral</h2>
-            <select className="sel" value={ano} onChange={e=>setAno(Number(e.target.value))} style={{width:"auto",marginBottom:0,padding:"8px 14px"}}>
+            <div style={{display:"flex",gap:10,alignItems:"center"}}>
+              {data.mentorados.some(m=>FAKE_IDS.includes(m.id)) && (
+                <button onClick={removerDemos} style={{background:"#2D0000",border:"1px solid #FB718540",color:"#FB7185",borderRadius:8,padding:"8px 14px",fontSize:12,fontWeight:600,cursor:"pointer"}}>
+                  🗑️ Remover demos
+                </button>
+              )}
+              <select className="sel" value={ano} onChange={e=>setAno(Number(e.target.value))} style={{width:"auto",marginBottom:0,padding:"8px 14px"}}>
               {[2024,2025,2026,2027].map(a=><option key={a} value={a}>{a}</option>)}
             </select>
+            </div>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,marginBottom:24}}>
             <StatCard icon="💰" label={`Faturamento ${ano}`} value={totalG} color="#7EC742" isNum delay={0}/>
